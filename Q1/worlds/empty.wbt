@@ -16,6 +16,8 @@ RectangleArena {
 Robot {
   rotation 1 0 0 1.5708
   children [
+    Compass {
+    }
     GPS {
     }
     HingeJoint {
@@ -36,7 +38,7 @@ Robot {
         }
       ]
       endPoint DEF EPUCK_LEFT_WHEEL Solid {
-        translation -0.026 0.02 0
+        translation -0.0260000000000004 0.02 0
         rotation 1 0 0 3.069914134015893
         children [
           DEF EPUCK_WHEEL Transform {
@@ -188,7 +190,7 @@ Robot {
         }
       ]
       endPoint DEF EPUCK_RIGHT_WHEEL Solid {
-        translation 0.026000000000000006 0.02 0
+        translation 0.025999999999999603 0.02 0
         rotation -1 0 0 1.35347013825638
         children [
           Transform {
