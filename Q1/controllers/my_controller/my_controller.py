@@ -90,4 +90,4 @@ if __name__ == '__main__':
         theta.append(res)
        
     my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
-    my_plot('counter', 'Theta', 'green', movement_type, time, theta)
+    my_plot('Time', 'Theta', 'green', movement_type, time, theta)
