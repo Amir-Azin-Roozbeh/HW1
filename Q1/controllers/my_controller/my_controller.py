@@ -1,4 +1,4 @@
-from controller import Robot, Motor, GPS
+from controller import Robot, Motor, GPS, Compass
 import matplotlib.pyplot as plt
 
 TIME_STEP = 64
@@ -41,9 +41,19 @@ def set_wheels(leftMotor, rightMotor, pi_1, pi_2):
     return movement_type
 
 if __name__ == '__main__':
+    
+    # Creating Robot
     robot = Robot()
+    
+    # Creating GPS
     gps = GPS('gps')
     gps.enable(1000)
+    
+    # Creating Compass
+    compass = Compass()
+    compass.enable(1000)
+    
+    # Setting Motor Wheels
     leftMotor = robot.getDevice('left wheel motor')
     rightMotor = robot.getDevice('right wheel motor')
     leftMotor.setPosition(float('inf'))
@@ -53,7 +63,7 @@ if __name__ == '__main__':
     x_axis = []
     y_axis = []
     
-    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = -1)
+    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = 0.5)
     print('movment_type: ', movement_type)
     
     while robot.step(TIME_STEP) != -1 and counter != 5000:
@@ -62,4 +72,4 @@ if __name__ == '__main__':
         y_axis.append(res[1])
         counter += 10
     print(len(x_axis))
-    my_plot('X axis', 'Y axis', 'green', movement_type, x_axis, y_axis)
+    #my_plot('X axis', 'Y axis', 'green', movement_type, x_axis, y_axis)
