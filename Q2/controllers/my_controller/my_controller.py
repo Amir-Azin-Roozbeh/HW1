@@ -1,10 +1,13 @@
 from controller import Robot, Motor, GPS, Compass
 import matplotlib.pyplot as plt
 import math
+import numpy as np
 
 TIME_STEP = 64
 
 MAX_SPEED = 6.28
+
+WHEEL_RADIUS = 0.0205.0
 
 # -----------------------------------------------
 
@@ -17,26 +20,6 @@ def my_plot(xlabel: str, ylabel: str, color: str, title: str, x_axis, y_axis):
 
 # -------------------------------------------------
 
-def set_wheels(leftMotor, rightMotor, pi_1, pi_2):
-    leftMotor.setVelocity(pi_1 * MAX_SPEED)
-    rightMotor.setVelocity(pi_2 * MAX_SPEED)
-        
-    if pi_1 == pi_2:
-        movement_type = 'pi_1 == pi_2'
-        
-    elif pi_1 == -pi_2:
-        movement_type = 'pi_1 == -pi_2'
-        
-    elif pi_1 != 0 and pi_2 == 0:
-        movement_type = 'pi_2 == 0'
-        
-    elif pi_1 < pi_2:
-        movement_type = 'pi_1 < pi_2'
-        
-    else:
-        movement_type = 'unsupported'
-        
-    return movement_type
     
 # ----------------------------------------------
 
@@ -75,8 +58,20 @@ if __name__ == '__main__':
     y_axis = []
     theta = []
     
-    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = 1)
-    print('movment_type: ', movement_type)
+    # Case1: Linear_velocity = const, angular_velocity = 0
+    x_dot = 1
+    y_dot = 1
+    theta_dot = 0
+    first_matrix = np.array([x_dot, y_dot, theta_dot])
+    r_theta = np.array([[np.cos(0), np.sin(0), 0],[-np.sin(0), np.cos(0), 0], [0, 0, 1]])
+    
+    # Case2: Linear_velocity = 0, angular_velocity = const
+    x_dot = 0
+    y_dot = 0
+    theta_dot = 1
+    first_matrix = np.array([x_dot, y_dot, theta_dot])
+    r_theta = np.array([[np.cos(math.pi/4), np.sin(math.pi/4), 0],[-np.sin(math.pi/4), np.cos(math.pi/4), 0], [0, 0, 1]])
+    
     
     while robot.step(TIME_STEP) != -1 and counter != 100:
         time.append(counter)
@@ -88,6 +83,5 @@ if __name__ == '__main__':
         
         res = get_bearing_in_degrees(compass)
         theta.append(res)
-       
-    my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
-    my_plot('Time', 'Theta', 'green', movement_type, time, theta)
+        
+   

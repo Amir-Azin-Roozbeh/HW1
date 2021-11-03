@@ -75,7 +75,7 @@ if __name__ == '__main__':
     y_axis = []
     theta = []
     
-    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = -1)
+    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 3, pi_2 = 1.5)
     print('movment_type: ', movement_type)
     
     while robot.step(TIME_STEP) != -1 and counter != 100:
