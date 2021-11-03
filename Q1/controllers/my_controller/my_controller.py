@@ -70,24 +70,24 @@ if __name__ == '__main__':
     rightMotor.setPosition(float('inf'))
     
     counter = 0
+    time = []
     x_axis = []
     y_axis = []
+    theta = []
     
-    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = -1)
+    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = 1)
     print('movment_type: ', movement_type)
     
-    while robot.step(TIME_STEP) != -1 and counter != 5000:
-        counter += 10
+    while robot.step(TIME_STEP) != -1 and counter != 100:
+        time.append(counter)
+        counter += 1
         
         gps_val = gps.getValues()
         x_axis.append(gps_val[0])
         y_axis.append(gps_val[1])
         
         res = get_bearing_in_degrees(compass)
-        print(res)
-        
-        
-    # print(len(x_axis))
-    # print('x_axis: ', x_axis)
-    # print('y_axis: ', y_axis)
-    my_plot('X axis', 'Y axis', 'green', movement_type, x_axis, y_axis)
+        theta.append(res)
+       
+    my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
+    my_plot('counter', 'Theta', 'green', movement_type, time, theta)
