@@ -7,7 +7,7 @@ TIME_STEP = 64
 
 MAX_SPEED = 6.28
 
-WHEEL_RADIUS = 0.0205.0
+WHEEL_RADIUS = 0.0205
 
 # -----------------------------------------------
 
@@ -20,6 +20,8 @@ def my_plot(xlabel: str, ylabel: str, color: str, title: str, x_axis, y_axis):
 
 # -------------------------------------------------
 
+def inverse_kinematics(x_dot, y_dot, theta_dot):
+    
     
 # ----------------------------------------------
 
