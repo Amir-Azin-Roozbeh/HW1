@@ -2,6 +2,7 @@ from controller import Robot, Motor, GPS, Compass
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+from sympy import symbols, Eq, solve
 
 TIME_STEP = 64
 
@@ -53,6 +54,16 @@ def inverse_kinematics(case: int):
     
     else:
         print('Unsupported')
+    
+# ----------------------------------------------
+
+def solve_equation(x_dot_r, theta_dot_r):
+    pi_1_dot, pi_2_dot = symbols('x,y')
+    
+    eq1 = Eq(((WHEEL_RADIUS)/2) * (x + y), x_dot_r)
+    eq2 = Eq(((WHEEL_RADIUS)/2) * (x - y), theta_dot_r)
+    
+    return solve((eq1, eq2), (pi_1_dot, pi_2_dot))
     
 # ----------------------------------------------
 
