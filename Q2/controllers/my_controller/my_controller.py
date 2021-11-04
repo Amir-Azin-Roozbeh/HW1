@@ -13,12 +13,15 @@ WHEEL_RADIUS = 0.0205
 
 CHASIS_LENGTH = 0.052
 
-CASE = 2
+CASE = 1
 """
 case1: linear_velocity = const, angluar_velocity = 0
 case2: linear_velocity = 0, angular_velocity = const
 
 """
+plot_type1 = 'case1: linear_velocity = const, angluar_velocity = 0' 
+plot_type2 = 'case2: linear_velocity = 0, angular_velocity = const'
+
 FLAG = 0
 
 # -----------------------------------------------
@@ -92,6 +95,15 @@ if __name__ == '__main__':
     
     velocities = []
     
+    if CASE == 1:
+        x_dot = -0.1
+        y_dot = -0.1
+        theta_dot = 0
+    else:
+        x_dot = 0
+        y_dot = 0
+        theta_dot = 1
+    
     while robot.step(TIME_STEP) != -1 and counter != 100:
         counter += 1
     
@@ -101,7 +113,7 @@ if __name__ == '__main__':
         if CASE == 1:
             FLAG = 1
   
-        interface_vector = inverse_kinematics(0, 0, 5, angle)
+        interface_vector = inverse_kinematics(x_dot, y_dot, theta_dot, angle)
 
         pi_dots = solve_equation(interface_vector[0], interface_vector[2])
         for key, value in pi_dots.items():
@@ -110,5 +122,15 @@ if __name__ == '__main__':
         leftMotor.setVelocity((int)(velocities[0]) / MAX_SPEED)
         rightMotor.setVelocity((int)(velocities[1])/ MAX_SPEED)
         velocities.clear()
+        
+        gps_val = gps.getValues()
+        x_axis.append(gps_val[0])
+        y_axis.append(gps_val[1])
+     
+    if CASE == 1:
+         movement_type = plot_type1
+    else:
+         movement_type = plot_type2
+    my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
 
         
