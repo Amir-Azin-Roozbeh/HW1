@@ -63,7 +63,9 @@ def solve_equation(x_dot_r, theta_dot_r):
     eq1 = Eq(((WHEEL_RADIUS)/2) * (x + y), x_dot_r)
     eq2 = Eq(((WHEEL_RADIUS)/2) * (x - y), theta_dot_r)
     
-    return solve((eq1, eq2), (pi_1_dot, pi_2_dot))
+    solve((eq1, eq2), (pi_1_dot, pi_2_dot))
+    
+    return pi_1_dot, pi_2_dot
     
 # ----------------------------------------------
 
