@@ -20,8 +20,39 @@ def my_plot(xlabel: str, ylabel: str, color: str, title: str, x_axis, y_axis):
 
 # -------------------------------------------------
 
-def inverse_kinematics(x_dot, y_dot, theta_dot):
+def inverse_kinematics(case: int):
     
+    if case == 1:
+        print('Case1: Linear_velocity = const, angular_velocity = 0')
+        x_dot = 1
+        y_dot = 1
+        theta_dot = 0
+        second_matrix = np.array([x_dot, y_dot, theta_dot])
+        r_theta = np.array([[np.cos(0), np.sin(0), 0],[-np.sin(0), np.cos(0), 0], [0, 0, 1]])
+        
+        result = np.matmul(r_theta, np.transpose(second_matrix))
+        
+        # Y_dot_R = 0; in order not to slip
+        result[1] = 0
+        print('result: ', result)
+ 
+ 
+    elif case == 2:
+        print('Case2: Linear_velocity = 0, angular_velocity = const')
+        x_dot = 0
+        y_dot = 0
+        theta_dot = 1
+        second_matrix = np.array([x_dot, y_dot, theta_dot])
+        r_theta = np.array([[np.cos(math.pi/4), np.sin(math.pi/4), 0],[-np.sin(math.pi/4), np.cos(math.pi/4), 0], [0, 0, 1]])
+        
+        result = np.matmul(r_theta, np.transpose(second_matrix))
+        
+        # Y_dot_R = 0; in order not to slip
+        result[1] = 0
+        print('result: ', result)
+    
+    else:
+        print('Unsupported')
     
 # ----------------------------------------------
 
@@ -60,21 +91,7 @@ if __name__ == '__main__':
     y_axis = []
     theta = []
     
-    # Case1: Linear_velocity = const, angular_velocity = 0
-    x_dot = 1
-    y_dot = 1
-    theta_dot = 0
-    first_matrix = np.array([x_dot, y_dot, theta_dot])
-    r_theta = np.array([[np.cos(0), np.sin(0), 0],[-np.sin(0), np.cos(0), 0], [0, 0, 1]])
-    
-    # Case2: Linear_velocity = 0, angular_velocity = const
-    x_dot = 0
-    y_dot = 0
-    theta_dot = 1
-    first_matrix = np.array([x_dot, y_dot, theta_dot])
-    r_theta = np.array([[np.cos(math.pi/4), np.sin(math.pi/4), 0],[-np.sin(math.pi/4), np.cos(math.pi/4), 0], [0, 0, 1]])
-    
-    
+    inverse_kinematics(1)
     while robot.step(TIME_STEP) != -1 and counter != 100:
         time.append(counter)
         counter += 1
@@ -85,5 +102,7 @@ if __name__ == '__main__':
         
         res = get_bearing_in_degrees(compass)
         theta.append(res)
+        
+      
         
    
