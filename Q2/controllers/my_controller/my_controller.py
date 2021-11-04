@@ -3,12 +3,23 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 from sympy import symbols, Eq, solve
+import time
 
 TIME_STEP = 64
 
 MAX_SPEED = 6.28
 
 WHEEL_RADIUS = 0.0205
+
+CHASIS_LENGTH = 0.052
+
+CASE = 2
+"""
+case1: linear_velocity = const, angluar_velocity = 0
+case2: linear_velocity = 0, angular_velocity = const
+
+"""
+FLAG = 0
 
 # -----------------------------------------------
 
@@ -21,61 +32,36 @@ def my_plot(xlabel: str, ylabel: str, color: str, title: str, x_axis, y_axis):
 
 # -------------------------------------------------
 
-def inverse_kinematics(case: int):
+def inverse_kinematics(x_dot: int, y_dot: int, theta_dot: int, angle):
     
-    if case == 1:
-        print('Case1: Linear_velocity = const, angular_velocity = 0')
-        x_dot = 1
-        y_dot = 1
-        theta_dot = 0
-        second_matrix = np.array([x_dot, y_dot, theta_dot])
-        r_theta = np.array([[np.cos(0), np.sin(0), 0],[-np.sin(0), np.cos(0), 0], [0, 0, 1]])
-        
-        result = np.matmul(r_theta, np.transpose(second_matrix))
-        
-        # Y_dot_R = 0; in order not to slip
-        result[1] = 0
-        print('result: ', result)
- 
- 
-    elif case == 2:
-        print('Case2: Linear_velocity = 0, angular_velocity = const')
-        x_dot = 0
-        y_dot = 0
-        theta_dot = 1
-        second_matrix = np.array([x_dot, y_dot, theta_dot])
-        r_theta = np.array([[np.cos(math.pi/4), np.sin(math.pi/4), 0],[-np.sin(math.pi/4), np.cos(math.pi/4), 0], [0, 0, 1]])
-        
-        result = np.matmul(r_theta, np.transpose(second_matrix))
-        
-        # Y_dot_R = 0; in order not to slip
-        result[1] = 0
-        print('result: ', result)
+    r_theta = np.array([[np.cos(angle), np.sin(angle), 0],[-np.sin(angle), np.cos(angle), 0], [0, 0, 1]])
+    second_matrix = np.array([x_dot, y_dot, theta_dot])
     
-    else:
-        print('Unsupported')
+    result = np.matmul(r_theta, np.transpose(second_matrix))
+    
+    # Y_dot_R should be Zero.
+    result[1] = 0
+
+    return result
     
 # ----------------------------------------------
 
 def solve_equation(x_dot_r, theta_dot_r):
-    pi_1_dot, pi_2_dot = symbols('x,y')
+    pi_1_dot, pi_2_dot = symbols('pi_1_dot,pi_2_dot')
     
-    eq1 = Eq(((WHEEL_RADIUS)/2) * (x + y), x_dot_r)
-    eq2 = Eq(((WHEEL_RADIUS)/2) * (x - y), theta_dot_r)
+    eq1 = Eq(((WHEEL_RADIUS)/2) * (pi_1_dot + pi_2_dot), x_dot_r)
+    eq2 = Eq(((WHEEL_RADIUS)/(2 * CHASIS_LENGTH)) * (pi_1_dot - pi_2_dot), theta_dot_r)
     
-    solve((eq1, eq2), (pi_1_dot, pi_2_dot))
+    res = solve((eq1, eq2), (pi_1_dot, pi_2_dot))
     
-    return pi_1_dot, pi_2_dot
+    return res 
     
 # ----------------------------------------------
 
-def get_bearing_in_degrees(compass: Compass):
+def get_bearing(compass: Compass):
     north = compass.getValues()
     rad = math.atan2(north[0], north[1])
-    bearing = (rad - 1.5708) / math.pi * 180.0
-    if (bearing < 0.0):
-        bearing += 360.0
-    return bearing
+    return rad
 
 # ----------------------------------------------
 
@@ -86,11 +72,11 @@ if __name__ == '__main__':
     
     # Creating GPS
     gps = GPS('gps')
-    gps.enable(1000)
+    gps.enable(10)
     
     # Creating Compass
     compass = Compass('compass')
-    compass.enable(1000)
+    compass.enable(10)
     
     # Setting Motor Wheels
     leftMotor = robot.getDevice('left wheel motor')
@@ -99,23 +85,30 @@ if __name__ == '__main__':
     rightMotor.setPosition(float('inf'))
     
     counter = 0
-    time = []
+
     x_axis = []
     y_axis = []
     theta = []
     
-    inverse_kinematics(1)
+    velocities = []
+    
     while robot.step(TIME_STEP) != -1 and counter != 100:
-        time.append(counter)
         counter += 1
+    
+        if CASE == 2 or FLAG == 0:
+            angle = get_bearing(compass)
         
-        gps_val = gps.getValues()
-        x_axis.append(gps_val[0])
-        y_axis.append(gps_val[1])
+        if CASE == 1:
+            FLAG = 1
+  
+        interface_vector = inverse_kinematics(0, 0, 5, angle)
+
+        pi_dots = solve_equation(interface_vector[0], interface_vector[2])
+        for key, value in pi_dots.items():
+            velocities.append(value)
+         
+        leftMotor.setVelocity((int)(velocities[0]) / MAX_SPEED)
+        rightMotor.setVelocity((int)(velocities[1])/ MAX_SPEED)
+        velocities.clear()
+
         
-        res = get_bearing_in_degrees(compass)
-        theta.append(res)
-        
-      
-        
-   
