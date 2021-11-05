@@ -75,7 +75,7 @@ if __name__ == '__main__':
     y_axis = []
     theta = []
     
-    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = -1)
+    movement_type = set_wheels(leftMotor, rightMotor, pi_1 = 1, pi_2 = 5)
     print('movment_type: ', movement_type)
     
     while robot.step(TIME_STEP) != -1 and counter != 100:
@@ -89,5 +89,5 @@ if __name__ == '__main__':
         res = get_bearing_in_degrees(compass)
         theta.append(res)
        
-    my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
-    my_plot('Time', 'Theta', 'green', movement_type, time, theta)
+    # my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
+    # my_plot('Time', 'Theta', 'green', movement_type, time, theta)

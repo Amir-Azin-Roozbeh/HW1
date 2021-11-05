@@ -13,7 +13,7 @@ WHEEL_RADIUS = 0.0205
 
 CHASIS_LENGTH = 0.052
 
-CASE = 1
+CASE = 2
 """
 case1: linear_velocity = const, angluar_velocity = 0
 case2: linear_velocity = 0, angular_velocity = const
