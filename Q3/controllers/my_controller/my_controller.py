@@ -5,13 +5,13 @@ import math
 
 TIME_STEP = 64
 
-MAX_SPEED = 6.28
+MAX_SPEED = 5
 
 WHEEL_RADIUS = 0.0205
 
 CHASIS_LENGTH = 0.052
 
-RADIUS = 0.125
+RADIUS = WHEEL_RADIUS
 
 # -----------------------------------------------
 
@@ -32,15 +32,19 @@ def get_bearing(compass: Compass):
 
 # ----------------------------------------------
 
+# Question3 Part1
 def go_circle(leftMotor, rightMotor):     
     leftMotor.setVelocity(((RADIUS - 2 * CHASIS_LENGTH) * MAX_SPEED))
     rightMotor.setVelocity(RADIUS * MAX_SPEED)
 
 # ----------------------------------------------
 
-def archimedean_spiral(leftMotor, rightMotor, angle):     
-    leftMotor.setVelocity((angle * RADIUS - 2 * CHASIS_LENGTH ) * MAX_SPEED)
-    rightMotor.setVelocity((RADIUS) * MAX_SPEED)
+# Question3 Part2
+def archimedean_spiral(leftMotor, rightMotor, RADIUS): 
+    print('RADIUS: ', RADIUS)    
+    leftMotor.setVelocity(((RADIUS - 2 * CHASIS_LENGTH) * MAX_SPEED))
+    rightMotor.setVelocity(RADIUS * MAX_SPEED)    
+    
 
 
 # ----------------------------------------------
@@ -70,22 +74,29 @@ if __name__ == '__main__':
     y_axis = []
     theta = []
     
-    # go_circle(leftMotor, rightMotor)
-    # archimedean_spiral(leftMotor, rightMotor)
+    go_circle(leftMotor, rightMotor)
+    #archimedean_spiral(leftMotor, rightMotor)
     co = 1
-
-    while robot.step(TIME_STEP) != -1 and counter != 1000:
+    
+    while robot.step(TIME_STEP) != -1 and counter != 5000:
         counter += 1
         angle = get_bearing(compass)
-        print(angle)
-        archimedean_spiral(leftMotor, rightMotor, co)
-        co += math.pi/180
         
         gps_val = gps.getValues()
         x_axis.append(gps_val[0])
         y_axis.append(gps_val[1])
-     
-   
-    #my_plot('X_Axis', 'Y_Axis', 'red', movement_type, x_axis, y_axis)
+
+        print('location: ', gps_val)
+        # Check if the robot has traversed a whole Circle
+        if gps_val[0]**2 + gps_val[1]**2 >= RADIUS**2:
+            RADIUS += WHEEL_RADIUS
+            print(RADIUS) 
+        
+#        print(angle)
+        #archimedean_spiral(leftMotor, rightMotor, RADIUS)
+ 
+        co += math.pi/180
+
+    my_plot('X_Axis', 'Y_Axis', 'red', 'circle', x_axis, y_axis)
 
         
