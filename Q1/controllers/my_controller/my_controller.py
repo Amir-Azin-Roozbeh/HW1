@@ -27,8 +27,8 @@ def set_wheels(leftMotor, rightMotor, pi_1, pi_2):
     elif pi_1 == -pi_2:
         movement_type = 'pi_1 == -pi_2'
         
-    elif pi_1 != 0 and pi_2 == 0:
-        movement_type = 'pi_2 == 0'
+    elif pi_1 == 0 and pi_2 != 0:
+        movement_type = 'pi_1 == 0'
         
     elif pi_1 < pi_2:
         movement_type = 'pi_1 < pi_2'
